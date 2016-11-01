@@ -25,6 +25,7 @@ public class ForecastServiceImpl implements ForecastService {
   OpenWeatherApi openWeatherApi;
 
   public ForecastServiceImpl() {
+    // set up retrofit
     OkHttpClient httpClient = new OkHttpClient.Builder()
         .addInterceptor(new Interceptor() {
           @Override public Response intercept(Chain chain) throws IOException {

@@ -1,11 +1,11 @@
-package com.grepx.forecast5;
+package com.grepx.forecast5.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
-import com.grepx.forecast5.network.ForecastResponse;
 import com.grepx.forecast5.network.ForecastServiceImpl;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setupDependencies();
+    injectDependencies();
 
     setContentView(R.layout.activity_main);
 
@@ -39,11 +39,8 @@ public class MainActivity extends AppCompatActivity {
                    });
   }
 
-  private void setupDependencies() {
-    setupNetwork();
-  }
-
-  private void setupNetwork() {
+  private void injectDependencies() {
+    // in a production architecture I'd use Dagger to do this
     forecastService = new ForecastServiceImpl();
   }
 }
