@@ -3,15 +3,19 @@ package com.grepx.forecast5.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.HourForecast;
+import com.squareup.picasso.Picasso;
 
 public class HourForecastView extends FrameLayout {
 
   private TextView temp;
   private TextView tempMin;
   private TextView tempMax;
+  private ImageView icon;
+
   private String temperatureFormat;
   private String temperatureFormatMin;
   private String temperatureFormatMax;
@@ -36,6 +40,7 @@ public class HourForecastView extends FrameLayout {
     temp = (TextView) findViewById(R.id.temp);
     tempMin = (TextView) findViewById(R.id.temp_min);
     tempMax = (TextView) findViewById(R.id.temp_max);
+    icon = (ImageView) findViewById(R.id.icon);
 
     temperatureFormat = getContext().getString(R.string.temperature_format);
     temperatureFormatMin = getContext().getString(R.string.temperature_format_min);
@@ -53,6 +58,8 @@ public class HourForecastView extends FrameLayout {
     this.temp.setText(temp);
     this.tempMin.setText(tempMin);
     this.tempMax.setText(tempMax);
+
+    Picasso.with(getContext()).load(hourForecast.getIconUrl()).into(icon);
   }
 
   private String formatTemp(float temp) {
