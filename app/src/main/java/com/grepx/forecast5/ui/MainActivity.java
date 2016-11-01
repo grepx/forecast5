@@ -1,5 +1,6 @@
 package com.grepx.forecast5.ui;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
   private ForecastService forecastService;
 
+  private SwipeRefreshLayout swipeRefreshLayout;
   private EditText searchEditText;
   private ViewGroup dayListLayout;
 
@@ -61,19 +63,29 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
+    swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override public void onRefresh() {
+        doSearch(searchEditText.getText().toString());
+      }
+    });
+
     dayListLayout = (ViewGroup) findViewById(R.id.day_list_layout);
   }
 
   private void doSearch(String placeName) {
+    showLoading(true);
     forecastService.forecast(placeName)
                    .subscribeOn(Schedulers.io())
                    .observeOn(AndroidSchedulers.mainThread())
                    .subscribe(new Action1<List<DayForecast>>() {
                      @Override public void call(List<DayForecast> dayForecasts) {
+                       showLoading(false);
                        showResults(dayForecasts);
                      }
                    }, new Action1<Throwable>() {
                      @Override public void call(Throwable throwable) {
+                       showLoading(false);
                        showError();
                        Log.e(TAG, throwable.getMessage(), throwable);
                      }
@@ -91,5 +103,9 @@ public class MainActivity extends AppCompatActivity {
 
   private void showError() {
     Toast.makeText(this, R.string.error_text, Toast.LENGTH_SHORT).show();
+  }
+
+  private void showLoading(boolean loading) {
+    swipeRefreshLayout.setRefreshing(loading);
   }
 }
