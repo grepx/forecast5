@@ -41,9 +41,9 @@ public class DayForecastView extends FrameLayout {
 
     hourListLayout.removeAllViews();
     for (HourForecast hourForecast : dayForecast.getHourForecasts()) {
-      TextView textView = new TextView(getContext());
-      textView.setText("" + hourForecast.getTemp());
-      hourListLayout.addView(textView);
+      HourForecastView hourForecastView = new HourForecastView(getContext());
+      hourForecastView.setState(hourForecast);
+      hourListLayout.addView(hourForecastView);
     }
   }
 }

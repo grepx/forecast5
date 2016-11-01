@@ -1,4 +1,7 @@
 <resources>
   <string name="app_name">Forecast 5</string>
   <string name="search_hint">Enter location name...</string>
+  <string name="temperature_format">%1$s°C</string>
+  <string name="temperature_format_min">Min: %1$s</string>
+  <string name="temperature_format_max">Max: %1$s</string>
 </resources>
