@@ -29,8 +29,9 @@ public class ForecastServiceImpl implements ForecastService {
   public ForecastServiceImpl() {
     // set up retrofit
 
-    // proxy to charles to speed up development
-    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.0.18", 8888));
+    // to use a proxy to charles to speed up development, just uncomment this line
+    //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.0.18", 8888));
+    Proxy proxy = Proxy.NO_PROXY;
 
     OkHttpClient httpClient = new OkHttpClient.Builder()
         .addInterceptor(new Interceptor() {
