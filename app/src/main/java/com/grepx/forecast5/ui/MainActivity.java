@@ -13,20 +13,22 @@ import android.widget.Toast;
 import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
+import com.grepx.forecast5.domain.MainPresenter;
+import com.grepx.forecast5.domain.MainView;
 import com.grepx.forecast5.network.ForecastServiceImpl;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView {
   private static final String TAG = MainActivity.class.getSimpleName();
-
-  private ForecastService forecastService;
 
   private SwipeRefreshLayout swipeRefreshLayout;
   private EditText searchEditText;
   private ViewGroup dayListLayout;
+
+  private MainPresenter presenter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
   private void injectDependencies() {
     // in a production architecture I'd use Dagger to do this
-    forecastService = new ForecastServiceImpl();
+    ForecastServiceImpl forecastService = new ForecastServiceImpl();
+    presenter = new MainPresenter(this, forecastService, AndroidSchedulers.mainThread());
   }
 
   private void setupView() {
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             event.getAction() == KeyEvent.ACTION_DOWN &&
             event.getKeyCode() == KeyEvent.KEYCODE_ENTER
             ) {
-          doSearch(searchEditText.getText().toString());
+          presenter.doSearch(searchEditText.getText().toString());
           return true;
         }
         return false;
@@ -66,33 +69,14 @@ public class MainActivity extends AppCompatActivity {
     swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
-        doSearch(searchEditText.getText().toString());
+        presenter.doSearch(searchEditText.getText().toString());
       }
     });
 
     dayListLayout = (ViewGroup) findViewById(R.id.day_list_layout);
   }
 
-  private void doSearch(String placeName) {
-    showLoading(true);
-    forecastService.forecast(placeName)
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(new Action1<List<DayForecast>>() {
-                     @Override public void call(List<DayForecast> dayForecasts) {
-                       showLoading(false);
-                       showResults(dayForecasts);
-                     }
-                   }, new Action1<Throwable>() {
-                     @Override public void call(Throwable throwable) {
-                       showLoading(false);
-                       showError();
-                       Log.e(TAG, throwable.getMessage(), throwable);
-                     }
-                   });
-  }
-
-  private void showResults(List<DayForecast> dayForecasts) {
+  public void showResults(List<DayForecast> dayForecasts) {
     dayListLayout.removeAllViews();
     for (DayForecast dayForecast : dayForecasts) {
       DayForecastView dayForecastView = new DayForecastView(this);
@@ -101,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private void showError() {
+  public void showError() {
     Toast.makeText(this, R.string.error_text, Toast.LENGTH_SHORT).show();
   }
 
-  private void showLoading(boolean loading) {
+  public void showLoading(boolean loading) {
     swipeRefreshLayout.setRefreshing(loading);
   }
 }
