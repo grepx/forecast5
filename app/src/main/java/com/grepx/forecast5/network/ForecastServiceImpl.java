@@ -37,6 +37,7 @@ public class ForecastServiceImpl implements ForecastService {
           @Override public Response intercept(Chain chain) throws IOException {
             HttpUrl originalUrl = chain.request().url();
             HttpUrl url = originalUrl.newBuilder()
+                                     .addQueryParameter("units", "metric")
                                      .addQueryParameter("mode", "json")
                                      .addQueryParameter("appid", OpenWeatherConstants.appId)
                                      .build();
