@@ -8,4 +8,12 @@
   <string name="temperature_format_max">Max: %1$s</string>
 
   <string name="error_text">Failed to contact server. Please check your internet connection and try again.</string>
+
+  <string name="monday">Monday</string>
+  <string name="tuesday">Tuesday</string>
+  <string name="wednesday">Wednesday</string>
+  <string name="thursday">Thursday</string>
+  <string name="friday">Friday</string>
+  <string name="saturday">Saturday</string>
+  <string name="sunday">Sunday</string>
 </resources>

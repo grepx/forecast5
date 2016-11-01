@@ -2,14 +2,17 @@ package com.grepx.forecast5.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.HourForecast;
+import org.threeten.bp.DayOfWeek;
 
 public class DayForecastView extends FrameLayout {
+  private static final String TAG = DayForecastView.class.getSimpleName();
 
   private TextView dayName;
   private ViewGroup hourListLayout;
@@ -36,8 +39,7 @@ public class DayForecastView extends FrameLayout {
   }
 
   public void setState(DayForecast dayForecast) {
-    // todo: do this properly with i18n etc.
-    dayName.setText(dayForecast.getDayOfWeek().toString());
+    dayName.setText(getDayOfWeekString(dayForecast.getDayOfWeek()));
 
     hourListLayout.removeAllViews();
     for (HourForecast hourForecast : dayForecast.getHourForecasts()) {
@@ -45,5 +47,36 @@ public class DayForecastView extends FrameLayout {
       hourForecastView.setState(hourForecast);
       hourListLayout.addView(hourForecastView);
     }
+  }
+
+  private String getDayOfWeekString(DayOfWeek dayOfWeek) {
+    int stringResourceId;
+    switch (dayOfWeek) {
+      case MONDAY:
+        stringResourceId = R.string.monday;
+        break;
+      case TUESDAY:
+        stringResourceId = R.string.tuesday;
+        break;
+      case WEDNESDAY:
+        stringResourceId = R.string.wednesday;
+        break;
+      case THURSDAY:
+        stringResourceId = R.string.thursday;
+        break;
+      case FRIDAY:
+        stringResourceId = R.string.friday;
+        break;
+      case SATURDAY:
+        stringResourceId = R.string.saturday;
+        break;
+      case SUNDAY:
+        stringResourceId = R.string.sunday;
+        break;
+      default:
+        Log.e(TAG, "Unknown day of week");
+        stringResourceId = R.string.sunday;
+    }
+    return getContext().getString(stringResourceId);
   }
 }
