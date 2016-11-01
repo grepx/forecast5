@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Forecast 5</string>
+  <string name="search_hint">Enter location name...</string>
 </resources>
