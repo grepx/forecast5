@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                      }
                    }, new Action1<Throwable>() {
                      @Override public void call(Throwable throwable) {
+                       showError();
                        Log.e(TAG, throwable.getMessage(), throwable);
                      }
                    });
@@ -85,5 +87,9 @@ public class MainActivity extends AppCompatActivity {
       dayForecastView.setState(dayForecast);
       dayListLayout.addView(dayForecastView);
     }
+  }
+
+  private void showError() {
+    Toast.makeText(this, R.string.error_text, Toast.LENGTH_SHORT).show();
   }
 }
