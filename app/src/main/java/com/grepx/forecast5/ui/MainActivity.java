@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,9 +20,10 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = MainActivity.class.getSimpleName();
 
-  ForecastService forecastService;
+  private ForecastService forecastService;
 
-  EditText searchEditText;
+  private EditText searchEditText;
+  private ViewGroup dayListLayout;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +32,6 @@ public class MainActivity extends AppCompatActivity {
     injectDependencies();
 
     setupView();
-
-    forecastService.forecast("London")
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(new Action1<List<DayForecast>>() {
-                     @Override public void call(List<DayForecast> dayForecasts) {
-                       Log.d(TAG, "call: " + dayForecasts.get(0).getDayOfWeek());
-                     }
-                   }, new Action1<Throwable>() {
-                     @Override public void call(Throwable throwable) {
-                       Log.e(TAG, throwable.getMessage(), throwable);
-                     }
-                   });
   }
 
   private void injectDependencies() {
@@ -64,11 +53,37 @@ public class MainActivity extends AppCompatActivity {
             event.getAction() == KeyEvent.ACTION_DOWN &&
             event.getKeyCode() == KeyEvent.KEYCODE_ENTER
             ) {
-          Log.d(TAG, "onEditorAction: " + searchEditText.getText());
+          doSearch(searchEditText.getText().toString());
           return true;
         }
         return false;
       }
     });
+
+    dayListLayout = (ViewGroup) findViewById(R.id.day_list_layout);
+  }
+
+  private void doSearch(String placeName) {
+    forecastService.forecast(placeName)
+                   .subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe(new Action1<List<DayForecast>>() {
+                     @Override public void call(List<DayForecast> dayForecasts) {
+                       showResults(dayForecasts);
+                     }
+                   }, new Action1<Throwable>() {
+                     @Override public void call(Throwable throwable) {
+                       Log.e(TAG, throwable.getMessage(), throwable);
+                     }
+                   });
+  }
+
+  private void showResults(List<DayForecast> dayForecasts) {
+    dayListLayout.removeAllViews();
+    for (DayForecast dayForecast : dayForecasts) {
+      TextView textView = new TextView(this);
+      textView.setText(dayForecast.getDayOfWeek().toString());
+      dayListLayout.addView(textView);
+    }
   }
 }

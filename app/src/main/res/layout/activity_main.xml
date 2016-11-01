@@ -8,7 +8,6 @@
     android:orientation="vertical"
     tools:context="com.grepx.forecast5.ui.MainActivity"
     >
-
   <EditText
       android:id="@+id/search"
       android:layout_width="match_parent"
@@ -17,5 +16,16 @@
       android:imeOptions="actionGo"
       android:inputType="text"
       />
-
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+    <LinearLayout
+        android:id="@+id/day_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
+  </ScrollView>
 </LinearLayout>
