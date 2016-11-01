@@ -81,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
   private void showResults(List<DayForecast> dayForecasts) {
     dayListLayout.removeAllViews();
     for (DayForecast dayForecast : dayForecasts) {
-      TextView textView = new TextView(this);
-      textView.setText(dayForecast.getDayOfWeek().toString());
-      dayListLayout.addView(textView);
+      DayForecastView dayForecastView = new DayForecastView(this);
+      dayForecastView.setState(dayForecast);
+      dayListLayout.addView(dayForecastView);
     }
   }
 }
