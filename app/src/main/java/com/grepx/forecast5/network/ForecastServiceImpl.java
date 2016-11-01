@@ -4,6 +4,8 @@ import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
 import com.grepx.forecast5.domain.HourForecast;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.HttpUrl;
@@ -26,6 +28,10 @@ public class ForecastServiceImpl implements ForecastService {
 
   public ForecastServiceImpl() {
     // set up retrofit
+
+    // proxy to charles to speed up development
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.0.18", 8888));
+
     OkHttpClient httpClient = new OkHttpClient.Builder()
         .addInterceptor(new Interceptor() {
           @Override public Response intercept(Chain chain) throws IOException {
@@ -40,6 +46,7 @@ public class ForecastServiceImpl implements ForecastService {
             return chain.proceed(request);
           }
         })
+        .proxy(proxy)
         .build();
 
     Retrofit retrofit = new Retrofit.Builder()
