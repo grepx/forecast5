@@ -15,10 +15,12 @@ import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
 import com.grepx.forecast5.domain.MainPresenter;
 import com.grepx.forecast5.domain.MainView;
+import com.grepx.forecast5.domain.util.SubscriptionConfig;
 import com.grepx.forecast5.network.ForecastServiceImpl;
 import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements MainView {
@@ -42,7 +44,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
   private void injectDependencies() {
     // in a production architecture I'd use Dagger to do this
     ForecastServiceImpl forecastService = new ForecastServiceImpl();
-    presenter = new MainPresenter(this, forecastService, AndroidSchedulers.mainThread());
+    SubscriptionConfig subscriptionConfig = new SubscriptionConfig(Schedulers.io(),
+                                                                   AndroidSchedulers.mainThread());
+    presenter = new MainPresenter(this, forecastService, subscriptionConfig);
   }
 
   private void setupView() {

@@ -1,29 +1,28 @@
 package com.grepx.forecast5.domain;
 
 import android.util.Log;
+import com.grepx.forecast5.domain.util.RxUtil;
+import com.grepx.forecast5.domain.util.SubscriptionConfig;
 import java.util.List;
-import rx.Scheduler;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class MainPresenter {
   private static final String TAG = MainPresenter.class.getSimpleName();
 
   private final ForecastService forecastService;
-  private final Scheduler mainThread;
+  private final SubscriptionConfig subscriptionConfig;
   private final MainView view;
 
-  public MainPresenter(MainView view, ForecastService forecastService, Scheduler mainThread) {
+  public MainPresenter(MainView view, ForecastService forecastService, SubscriptionConfig subscriptionConfig) {
     this.view = view;
     this.forecastService = forecastService;
-    this.mainThread = mainThread;
+    this.subscriptionConfig = subscriptionConfig;
   }
 
   public void doSearch(String placeName) {
     view.showLoading(true);
     forecastService.forecast(placeName)
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(mainThread)
+                   .compose(RxUtil.<List<DayForecast>>applyConfig(subscriptionConfig))
                    .subscribe(new Action1<List<DayForecast>>() {
                      @Override public void call(List<DayForecast> dayForecasts) {
                        processResult(dayForecasts);
