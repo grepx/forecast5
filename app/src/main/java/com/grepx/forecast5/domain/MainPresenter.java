@@ -1,14 +1,12 @@
 package com.grepx.forecast5.domain;
 
-import android.util.Log;
 import com.grepx.forecast5.domain.util.RxUtil;
 import com.grepx.forecast5.domain.util.SubscriptionConfig;
 import java.util.List;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class MainPresenter {
-  private static final String TAG = MainPresenter.class.getSimpleName();
-
   private final ForecastService forecastService;
   private final SubscriptionConfig subscriptionConfig;
   private final MainView view;
@@ -42,6 +40,6 @@ public class MainPresenter {
   private void processError(Throwable throwable) {
     view.showLoading(false);
     view.showError();
-    Log.e(TAG, throwable.getMessage(), throwable);
+    Timber.e(throwable.getMessage(), throwable);
   }
 }

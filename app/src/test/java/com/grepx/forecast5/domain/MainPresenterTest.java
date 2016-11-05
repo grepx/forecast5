@@ -14,7 +14,6 @@ import org.threeten.bp.ZoneOffset;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 
 public class MainPresenterTest {

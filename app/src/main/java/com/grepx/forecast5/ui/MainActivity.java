@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.grepx.forecast5.BuildConfig;
 import com.grepx.forecast5.R;
 import com.grepx.forecast5.domain.DayForecast;
 import com.grepx.forecast5.domain.ForecastService;
@@ -22,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements MainView {
   private static final String TAG = MainActivity.class.getSimpleName();
@@ -36,9 +38,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    initApplication();
     injectDependencies();
 
     setupView();
+  }
+
+  private void initApplication() {
+    // in a production architecture this would be done in the Application class
+    if (BuildConfig.DEBUG) {
+      Timber.plant(new Timber.DebugTree());
+    }
   }
 
   private void injectDependencies() {
