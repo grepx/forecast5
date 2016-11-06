@@ -13,6 +13,7 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneOffset;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 
 import static org.mockito.Mockito.never;
 
@@ -39,7 +40,8 @@ public class MainPresenterTest {
     List<DayForecast> dayForecasts = new ArrayList<>();
     dayForecasts.add(new DayForecast(DayOfWeek.MONDAY, hourForecasts));
 
-    Observable<List<DayForecast>> serviceResult = Observable.just(dayForecasts);
+    BehaviorSubject<List<DayForecast>> serviceSubject = BehaviorSubject.create();
+    Observable<List<DayForecast>> serviceResult = serviceSubject.asObservable();
 
     // configure mocks
     MainView mainView = Mockito.mock(MainView.class);
@@ -47,13 +49,20 @@ public class MainPresenterTest {
     ForecastService forecastService = Mockito.mock(ForecastService.class);
     Mockito.when(forecastService.forecast(placeName)).thenReturn(serviceResult);
 
-    // do test
+    // TEST step 1: Do call
     SubscriptionConfig subscriptionConfig = new SubscriptionConfig(Schedulers.immediate(),
                                                                    Schedulers.immediate());
     MainPresenter mainPresenter = new MainPresenter(mainView, forecastService, subscriptionConfig);
     mainPresenter.doSearch(placeName);
 
-    // assertions
+    // step 1 assertions
+    Mockito.verify(mainView).showLoading(true);
+
+    // TEST step 2: Return from network
+    serviceSubject.onNext(dayForecasts);
+    serviceSubject.onCompleted();
+
+    // step 2 assertions
     Mockito.verify(mainView).showResults(dayForecasts);
     Mockito.verify(mainView).showLoading(false);
     Mockito.verify(mainView, never()).showError();
