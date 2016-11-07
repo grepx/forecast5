@@ -28,6 +28,13 @@ public class ForecastResponse {
       float tempMax;
     }
 
+    public Wind wind;
+
+    public static class Wind {
+      public float speed;
+      public float deg;
+    }
+
     public List<Weather> weather;
 
     public static class Weather {

@@ -9,15 +9,19 @@ public class HourForecast {
   private final float temp;
   private final float tempMin;
   private final float tempMax;
+  private final float windSpeed;
+  private final float windDegrees;
 
   public HourForecast(LocalDateTime time, int weatherCode, String iconUrl, float temp, float tempMin,
-                     float tempMax) {
+                     float tempMax, float windSpeed, float windDegrees) {
     this.time = time;
     this.weatherCode = weatherCode;
     this.iconUrl = iconUrl;
     this.temp = temp;
     this.tempMin = tempMin;
     this.tempMax = tempMax;
+    this.windSpeed = windSpeed;
+    this.windDegrees = windDegrees;
   }
 
   public LocalDateTime getTime() {
@@ -42,5 +46,13 @@ public class HourForecast {
 
   public float getTempMax() {
     return tempMax;
+  }
+
+  public float getWindSpeed() {
+    return windSpeed;
+  }
+
+  public float getWindDegrees() {
+    return windDegrees;
   }
 }

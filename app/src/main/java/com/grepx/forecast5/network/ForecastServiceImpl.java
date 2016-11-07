@@ -101,7 +101,9 @@ public class ForecastServiceImpl implements ForecastService {
         String.format(OpenWeatherConstants.iconUrlTemplate, weather.icon),
         forecast.main.temp,
         forecast.main.tempMin,
-        forecast.main.tempMax
+        forecast.main.tempMax,
+        forecast.wind.speed,
+        forecast.wind.deg
     );
   }
 
